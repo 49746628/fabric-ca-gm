@@ -4,7 +4,7 @@ package crl
 import (
 	"crypto"
 	"crypto/rand"
-	"crypto/x509"
+	//"crypto/x509"
 	"crypto/x509/pkix"
 	"math/big"
 	"os"
@@ -15,6 +15,8 @@ import (
 	"github.com/cloudflare/cfssl/certdb"
 	"github.com/cloudflare/cfssl/helpers"
 	"github.com/cloudflare/cfssl/log"
+
+	"github.com/Hyperledger-TWGC/ccs-gm/x509"
 )
 
 // NewCRLFromFile takes in a list of serial numbers, one per line, as well as the issuing certificate

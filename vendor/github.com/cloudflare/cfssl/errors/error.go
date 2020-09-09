@@ -1,9 +1,11 @@
 package errors
 
 import (
-	"crypto/x509"
+	//"crypto/x509"
 	"encoding/json"
 	"fmt"
+
+	"github.com/Hyperledger-TWGC/ccs-gm/x509"
 )
 
 // Error is the error type usually returned by functions in CF SSL package.

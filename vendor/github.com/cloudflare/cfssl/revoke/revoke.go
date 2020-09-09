@@ -6,7 +6,7 @@ package revoke
 import (
 	"bytes"
 	"crypto"
-	"crypto/x509"
+	//"crypto/x509"
 	"crypto/x509/pkix"
 	"encoding/base64"
 	"encoding/pem"
@@ -18,6 +18,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/Hyperledger-TWGC/ccs-gm/x509"
 	"golang.org/x/crypto/ocsp"
 
 	"github.com/cloudflare/cfssl/helpers"

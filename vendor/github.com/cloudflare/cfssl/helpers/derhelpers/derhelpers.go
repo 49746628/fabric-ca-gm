@@ -6,9 +6,12 @@ import (
 	"crypto"
 	"crypto/ecdsa"
 	"crypto/rsa"
-	"crypto/x509"
+	//"crypto/x509"
 
 	cferr "github.com/cloudflare/cfssl/errors"
+
+	"github.com/Hyperledger-TWGC/ccs-gm/sm2"
+	"github.com/Hyperledger-TWGC/ccs-gm/x509"
 )
 
 // ParsePrivateKeyDER parses a PKCS #1, PKCS #8, or elliptic curve
@@ -35,6 +38,8 @@ func ParsePrivateKeyDER(keyDER []byte) (key crypto.Signer, err error) {
 		return generalKey.(*rsa.PrivateKey), nil
 	case *ecdsa.PrivateKey:
 		return generalKey.(*ecdsa.PrivateKey), nil
+	case *sm2.PrivateKey:
+		return generalKey.(*sm2.PrivateKey), nil
 	}
 
 	// should never reach here

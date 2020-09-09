@@ -10,7 +10,7 @@ package ocsp
 import (
 	"bytes"
 	"crypto"
-	"crypto/x509"
+	//"crypto/x509"
 	"crypto/x509/pkix"
 	"io/ioutil"
 	"strconv"
@@ -20,6 +20,8 @@ import (
 	cferr "github.com/cloudflare/cfssl/errors"
 	"github.com/cloudflare/cfssl/helpers"
 	"github.com/cloudflare/cfssl/log"
+
+	"github.com/Hyperledger-TWGC/ccs-gm/x509"
 	"golang.org/x/crypto/ocsp"
 )
 

@@ -1,7 +1,7 @@
 package client
 
 import (
-	"crypto/tls"
+	//"crypto/tls"
 	"errors"
 	"net/http"
 	"strings"
@@ -9,6 +9,8 @@ import (
 
 	"github.com/cloudflare/cfssl/auth"
 	"github.com/cloudflare/cfssl/info"
+
+	"github.com/Hyperledger-TWGC/ccs-gm/tls"
 )
 
 // Strategy is the means by which the server to use as a remote should

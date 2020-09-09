@@ -82,6 +82,16 @@ const (
 
 	// X509Certificate Label for X509 certificate related operation
 	X509Certificate = "X509Certificate"
+	//
+	SM2 = "SM2"
+	SM3 = "SM3"
+	SM4 = "SM4"
+	// This is used for indicating hashopts while doing sm3 before sm2 signature
+	// through which hash will actually do nothing
+	SM3SIG = "SM3SIG"
+
+	// SM2ReRand SM2 key re-randomization
+	SM2ReRand = "SM2_RERAND"
 )
 
 // ECDSAKeyGenOpts contains options for ECDSA key generation.
@@ -289,7 +299,7 @@ func (opts *RSAKeyGenOpts) Ephemeral() bool {
 	return opts.Temporary
 }
 
-// ECDSAGoPublicKeyImportOpts contains options for RSA key importation from rsa.PublicKey
+// RSAGoPublicKeyImportOpts contains options for RSA key importation from rsa.PublicKey
 type RSAGoPublicKeyImportOpts struct {
 	Temporary bool
 }
@@ -319,4 +329,125 @@ func (opts *X509PublicKeyImportOpts) Algorithm() string {
 // false otherwise.
 func (opts *X509PublicKeyImportOpts) Ephemeral() bool {
 	return opts.Temporary
+}
+
+// SM2KeyGenOpts contains options for SM2 key generation.
+type SM2KeyGenOpts struct {
+	Temporary bool
+}
+
+// Algorithm returns the key generation algorithm identifier (to be used).
+func (opts *SM2KeyGenOpts) Algorithm() string {
+	return SM2
+}
+
+// Ephemeral returns true if the key to generate has to be ephemeral,
+// false otherwise.
+func (opts *SM2KeyGenOpts) Ephemeral() bool {
+	return opts.Temporary
+}
+
+// SM2PKIXPublicKeyImportOpts contains options for SM2 public key importation in PKIX format
+type SM2PKIXPublicKeyImportOpts struct {
+	Temporary bool
+}
+
+// Algorithm returns the key importation algorithm identifier (to be used).
+func (opts *SM2PKIXPublicKeyImportOpts) Algorithm() string {
+	return SM2
+}
+
+// Ephemeral returns true if the key to generate has to be ephemeral,
+// false otherwise.
+func (opts *SM2PKIXPublicKeyImportOpts) Ephemeral() bool {
+	return opts.Temporary
+}
+
+// SM2PrivateKeyImportOpts contains options for SM2 secret key importation in DER format
+// or PKCS#8 format.
+type SM2PrivateKeyImportOpts struct {
+	Temporary bool
+}
+
+// Algorithm returns the key importation algorithm identifier (to be used).
+func (opts *SM2PrivateKeyImportOpts) Algorithm() string {
+	return SM2
+}
+
+// Ephemeral returns true if the key to generate has to be ephemeral,
+// false otherwise.
+func (opts *SM2PrivateKeyImportOpts) Ephemeral() bool {
+	return opts.Temporary
+}
+
+// SM2GoPublicKeyImportOpts contains options for SM2 key importation from ecdsa.PublicKey
+type SM2GoPublicKeyImportOpts struct {
+	Temporary bool
+}
+
+// Algorithm returns the key importation algorithm identifier (to be used).
+func (opts *SM2GoPublicKeyImportOpts) Algorithm() string {
+	return SM2
+}
+
+// Ephemeral returns true if the key to generate has to be ephemeral,
+// false otherwise.
+func (opts *SM2GoPublicKeyImportOpts) Ephemeral() bool {
+	return opts.Temporary
+}
+
+// SM2ReRandKeyOpts contains options for ECDSA key re-randomization.
+type SM2ReRandKeyOpts struct {
+	Temporary bool
+	Expansion []byte
+}
+
+// Algorithm returns the key derivation algorithm identifier (to be used).
+func (opts *SM2ReRandKeyOpts) Algorithm() string {
+	return SM2ReRand
+}
+
+// Ephemeral returns true if the key to generate has to be ephemeral,
+// false otherwise.
+func (opts *SM2ReRandKeyOpts) Ephemeral() bool {
+	return opts.Temporary
+}
+
+// ExpansionValue returns the re-randomization factor
+func (opts *SM2ReRandKeyOpts) ExpansionValue() []byte {
+	return opts.Expansion
+}
+
+// SM4KeyGenOpts contains options for SM4 key generation at default security level
+type SM4KeyGenOpts struct {
+	Temporary bool
+}
+
+// Algorithm returns the key generation algorithm identifier (to be used).
+func (opts *SM4KeyGenOpts) Algorithm() string {
+	return SM4
+}
+
+// Ephemeral returns true if the key to generate has to be ephemeral,
+// false otherwise.
+func (opts *SM4KeyGenOpts) Ephemeral() bool {
+	return opts.Temporary
+}
+
+// SM3Opts contains options for computing SM3.
+type SM3Opts struct {
+}
+
+// Algorithm returns the hash algorithm identifier (to be used).
+func (opts *SM3Opts) Algorithm() string {
+	return SM3
+}
+
+// SM3SIGOpts contains options relating to SM3.
+type SM3SIGOpts struct {
+}
+
+// Algorithm returns the hash algorithm identifier (to be used).
+func (opts *SM3SIGOpts) Algorithm() string {
+	return SM3SIG
 }

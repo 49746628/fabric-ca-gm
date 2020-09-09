@@ -16,7 +16,7 @@ import (
 	_ "crypto/sha1"
 	_ "crypto/sha256"
 	_ "crypto/sha512"
-	"crypto/x509"
+	//"crypto/x509"
 	"crypto/x509/pkix"
 	"encoding/asn1"
 	"errors"
@@ -24,6 +24,9 @@ import (
 	"math/big"
 	"strconv"
 	"time"
+
+	"github.com/Hyperledger-TWGC/ccs-gm/sm2"
+	"github.com/Hyperledger-TWGC/ccs-gm/x509"
 )
 
 var idPKIXOCSPBasic = asn1.ObjectIdentifier([]int{1, 3, 6, 1, 5, 5, 7, 48, 1, 1})
@@ -151,6 +154,10 @@ var (
 	oidSignatureECDSAWithSHA256 = asn1.ObjectIdentifier{1, 2, 840, 10045, 4, 3, 2}
 	oidSignatureECDSAWithSHA384 = asn1.ObjectIdentifier{1, 2, 840, 10045, 4, 3, 3}
 	oidSignatureECDSAWithSHA512 = asn1.ObjectIdentifier{1, 2, 840, 10045, 4, 3, 4}
+
+	oidSignatureSM2WithSM3    = asn1.ObjectIdentifier{1, 2, 156, 10197, 1, 501}
+	oidSignatureSM2WithSHA1   = asn1.ObjectIdentifier{1, 2, 156, 10197, 1, 502}
+	oidSignatureSM2WithSHA256 = asn1.ObjectIdentifier{1, 2, 156, 10197, 1, 503}
 )
 
 var hashOIDs = map[crypto.Hash]asn1.ObjectIdentifier{
@@ -179,6 +186,9 @@ var signatureAlgorithmDetails = []struct {
 	{x509.ECDSAWithSHA256, oidSignatureECDSAWithSHA256, x509.ECDSA, crypto.SHA256},
 	{x509.ECDSAWithSHA384, oidSignatureECDSAWithSHA384, x509.ECDSA, crypto.SHA384},
 	{x509.ECDSAWithSHA512, oidSignatureECDSAWithSHA512, x509.ECDSA, crypto.SHA512},
+	{x509.SM2WithSM3, oidSignatureSM2WithSM3, x509.SM2, 255},
+	{x509.SM2WithSHA1, oidSignatureSM2WithSHA1, x509.SM2, crypto.SHA1},
+	{x509.SM2WithSHA256, oidSignatureSM2WithSHA256, x509.SM2, crypto.SHA256},
 }
 
 // TODO(rlb): This is also from crypto/x509, so same comment as AGL's below
@@ -210,7 +220,16 @@ func signingParamsForPublicKey(pub interface{}, requestedSigAlgo x509.SignatureA
 		default:
 			err = errors.New("x509: unknown elliptic curve")
 		}
+	case *sm2.PublicKey:
+		pubType = x509.SM2
 
+		switch pub.Curve {
+		case sm2.P256():
+			hashFunc = crypto.SHA1
+			sigAlgo.Algorithm = oidSignatureSM2WithSHA1
+		default:
+			err = errors.New("x509: unknown sm2 elliptic curve")
+		}
 	default:
 		err = errors.New("x509: only RSA and ECDSA keys supported")
 	}

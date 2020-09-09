@@ -12,12 +12,14 @@ package pkcs12
 import (
 	"crypto/ecdsa"
 	"crypto/rsa"
-	"crypto/x509"
+	//"crypto/x509"
 	"crypto/x509/pkix"
 	"encoding/asn1"
 	"encoding/hex"
 	"encoding/pem"
 	"errors"
+
+	"github.com/Hyperledger-TWGC/ccs-gm/x509"
 )
 
 var (

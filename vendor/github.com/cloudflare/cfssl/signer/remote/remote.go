@@ -1,7 +1,7 @@
 package remote
 
 import (
-	"crypto/x509"
+	//"crypto/x509"
 	"encoding/json"
 	"errors"
 	"net/http"
@@ -13,6 +13,8 @@ import (
 	"github.com/cloudflare/cfssl/helpers"
 	"github.com/cloudflare/cfssl/info"
 	"github.com/cloudflare/cfssl/signer"
+
+	"github.com/Hyperledger-TWGC/ccs-gm/x509"
 )
 
 // A Signer represents a CFSSL instance running as signing server.

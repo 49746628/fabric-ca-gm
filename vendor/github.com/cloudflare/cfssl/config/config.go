@@ -2,8 +2,8 @@
 package config
 
 import (
-	"crypto/tls"
-	"crypto/x509"
+	//"crypto/tls"
+	//"crypto/x509"
 	"encoding/asn1"
 	"encoding/json"
 	"errors"
@@ -19,6 +19,9 @@ import (
 	"github.com/cloudflare/cfssl/helpers"
 	"github.com/cloudflare/cfssl/log"
 	ocspConfig "github.com/cloudflare/cfssl/ocsp/config"
+
+	"github.com/Hyperledger-TWGC/ccs-gm/tls"
+	"github.com/Hyperledger-TWGC/ccs-gm/x509"
 )
 
 // A CSRWhitelist stores booleans for fields in the CSR. If a CSRWhitelist is

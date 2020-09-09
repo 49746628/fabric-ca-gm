@@ -7,7 +7,7 @@ import (
 	"crypto/elliptic"
 	"crypto/rsa"
 	"crypto/sha1"
-	"crypto/x509"
+	//"crypto/x509"
 	"crypto/x509/pkix"
 	"encoding/asn1"
 	"errors"
@@ -21,6 +21,9 @@ import (
 	"github.com/cloudflare/cfssl/csr"
 	cferr "github.com/cloudflare/cfssl/errors"
 	"github.com/cloudflare/cfssl/info"
+
+	"github.com/Hyperledger-TWGC/ccs-gm/sm2"
+	"github.com/Hyperledger-TWGC/ccs-gm/x509"
 )
 
 // Subject contains the information that should be used to override the
@@ -157,6 +160,13 @@ func DefaultSigAlgo(priv crypto.Signer) x509.SignatureAlgorithm {
 			return x509.ECDSAWithSHA512
 		default:
 			return x509.ECDSAWithSHA1
+		}
+	case *sm2.PublicKey:
+		switch pub.Curve {
+		case sm2.P256():
+			return x509.SM2WithSM3
+		default:
+			return x509.SM2WithSHA256
 		}
 	default:
 		return x509.UnknownSignatureAlgorithm

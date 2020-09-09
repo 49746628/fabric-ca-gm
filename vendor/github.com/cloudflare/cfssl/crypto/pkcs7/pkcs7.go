@@ -47,12 +47,14 @@
 package pkcs7
 
 import (
-	"crypto/x509"
+	//"crypto/x509"
 	"crypto/x509/pkix"
 	"encoding/asn1"
 	"errors"
 
 	cferr "github.com/cloudflare/cfssl/errors"
+
+	"github.com/Hyperledger-TWGC/ccs-gm/x509"
 )
 
 // Types used for asn1 Unmarshaling.

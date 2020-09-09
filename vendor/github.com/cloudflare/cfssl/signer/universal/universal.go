@@ -2,7 +2,7 @@
 package universal
 
 import (
-	"crypto/x509"
+	//"crypto/x509"
 	"net/http"
 
 	"github.com/cloudflare/cfssl/certdb"
@@ -12,6 +12,8 @@ import (
 	"github.com/cloudflare/cfssl/signer"
 	"github.com/cloudflare/cfssl/signer/local"
 	"github.com/cloudflare/cfssl/signer/remote"
+
+	"github.com/Hyperledger-TWGC/ccs-gm/x509"
 )
 
 // Signer represents a universal signer which is both local and remote

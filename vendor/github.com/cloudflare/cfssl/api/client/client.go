@@ -3,7 +3,7 @@ package client
 
 import (
 	"bytes"
-	"crypto/tls"
+	//"crypto/tls"
 	"encoding/json"
 	stderr "errors"
 	"fmt"
@@ -20,6 +20,8 @@ import (
 	"github.com/cloudflare/cfssl/errors"
 	"github.com/cloudflare/cfssl/info"
 	"github.com/cloudflare/cfssl/log"
+
+	"github.com/Hyperledger-TWGC/ccs-gm/tls"
 )
 
 // A server points to a single remote CFSSL instance.
@@ -103,7 +105,8 @@ func (srv *server) createTLSTransport() (transport *http.Transport) {
 	// Setup HTTPS client
 	tlsConfig := srv.TLSConfig
 	tlsConfig.BuildNameToCertificate()
-	return &http.Transport{TLSClientConfig: tlsConfig}
+	//TODO：暂不支持https
+	return &http.Transport{TLSClientConfig: nil}
 }
 
 // post connects to the remote server and returns a Response struct
