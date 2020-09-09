@@ -158,7 +158,8 @@ func (c *Client) initHTTPClient() error {
 		}
 		// set the default ciphers
 		tlsConfig.CipherSuites = tls.DefaultCipherSuites
-		tr.TLSClientConfig = tlsConfig
+		//TODO：暂不支持tls
+		tr.TLSClientConfig = nil
 	}
 	c.httpClient = &http.Client{Transport: tr}
 	return nil

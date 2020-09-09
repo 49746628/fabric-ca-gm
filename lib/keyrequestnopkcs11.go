@@ -14,7 +14,11 @@ import "github.com/hyperledger/fabric-ca/api"
 // configuration options
 func GetKeyRequest(cfg *CAConfig) *api.BasicKeyRequest {
 	if cfg.CSP.SwOpts != nil {
-		return &api.BasicKeyRequest{Algo: "ecdsa", Size: cfg.CSP.SwOpts.SecLevel}
+		if cfg.CSP.SwOpts.HashFamily == "SM3"{
+			return &api.BasicKeyRequest{Algo: "sm2", Size: cfg.CSP.SwOpts.SecLevel}
+		}else{
+			return &api.BasicKeyRequest{Algo: "ecdsa", Size: cfg.CSP.SwOpts.SecLevel}
+		}
 	}
 	return api.NewBasicKeyRequest()
 }

@@ -7,7 +7,7 @@ SPDX-License-Identifier: Apache-2.0
 package main
 
 import (
-	"crypto/x509"
+	//"crypto/x509"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -17,6 +17,7 @@ import (
 	"regexp"
 	"testing"
 
+	"github.com/Hyperledger-TWGC/ccs-gm/x509"
 	"github.com/cloudflare/cfssl/log"
 	"github.com/hyperledger/fabric-ca/api"
 	"github.com/hyperledger/fabric-ca/lib"

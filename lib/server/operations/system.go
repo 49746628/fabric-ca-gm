@@ -8,7 +8,7 @@ package operations
 
 import (
 	"context"
-	"crypto/tls"
+	//"crypto/tls"
 	"fmt"
 	"io"
 	"net"
@@ -16,6 +16,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Hyperledger-TWGC/ccs-gm/tls"
 	"github.com/cloudflare/cfssl/log"
 	kitstatsd "github.com/go-kit/kit/metrics/statsd"
 	"github.com/gorilla/mux"

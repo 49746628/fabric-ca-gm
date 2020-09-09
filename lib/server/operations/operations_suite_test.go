@@ -9,8 +9,8 @@ package operations_test
 import (
 	"crypto/rand"
 	"crypto/rsa"
-	"crypto/tls"
-	"crypto/x509"
+	//"crypto/tls"
+	//"crypto/x509"
 	"crypto/x509/pkix"
 	"encoding/pem"
 	"fmt"
@@ -23,6 +23,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/Hyperledger-TWGC/ccs-gm/tls"
+	"github.com/Hyperledger-TWGC/ccs-gm/x509"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -176,9 +178,10 @@ func newHTTPClient(tlsDir string, withClientCert bool) *http.Client {
 		tlsClientConfig.Certificates = []tls.Certificate{clientCert}
 	}
 
+	//TODO： 暂不支持tls
 	return &http.Client{
 		Transport: &http.Transport{
-			TLSClientConfig: tlsClientConfig,
+			TLSClientConfig: nil,
 		},
 	}
 }

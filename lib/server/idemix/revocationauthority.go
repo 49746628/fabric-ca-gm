@@ -11,6 +11,7 @@ import (
 	"crypto/ecdsa"
 	"fmt"
 
+	"github.com/Hyperledger-TWGC/ccs-gm/sm2"
 	"github.com/cloudflare/cfssl/log"
 	fp256bn "github.com/hyperledger/fabric-amcl/amcl/FP256BN"
 	"github.com/hyperledger/fabric-ca/lib/server/db"
@@ -49,7 +50,7 @@ type RevocationAuthority interface {
 	// Epoch returns epoch value of the latest CRI
 	Epoch() (int, error)
 	// PublicKey returns revocation authority's public key
-	PublicKey() *ecdsa.PublicKey
+	PublicKey() interface{}
 }
 
 // RevocationAuthorityInfo is the revocation authority information record that is
@@ -195,8 +196,17 @@ func (ra *revocationAuthority) Epoch() (int, error) {
 }
 
 // PublicKey returns revocation authority's public key
-func (ra *revocationAuthority) PublicKey() *ecdsa.PublicKey {
-	return &ra.key.GetKey().PublicKey
+func (ra *revocationAuthority) PublicKey() interface{} {
+	priv := ra.key.GetKey()
+	switch priv.(type) {
+	case *ecdsa.PrivateKey:
+		return &(priv.(*ecdsa.PrivateKey).PublicKey)
+	case *sm2.PrivateKey:
+		return &(priv.(*sm2.PrivateKey).PublicKey)
+	default:
+		return nil
+	}
+
 }
 
 func (ra *revocationAuthority) getUnRevokedHandles(info *RevocationAuthorityInfo, revokedCreds []CredRecord) []*fp256bn.BIG {

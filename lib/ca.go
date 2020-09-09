@@ -11,7 +11,7 @@ import (
 	"crypto/dsa"
 	"crypto/ecdsa"
 	"crypto/rsa"
-	"crypto/x509"
+	//"crypto/x509"
 	"encoding/pem"
 	"fmt"
 	"io/ioutil"
@@ -22,6 +22,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/Hyperledger-TWGC/ccs-gm/sm2"
+	"github.com/Hyperledger-TWGC/ccs-gm/x509"
 	"github.com/cloudflare/cfssl/certdb"
 	"github.com/cloudflare/cfssl/config"
 	cfcsr "github.com/cloudflare/cfssl/csr"
@@ -1166,12 +1168,21 @@ func validateMatchingKeys(cert *x509.Certificate, keyFile string) error {
 			return errors.New("Public key and private key do not match")
 		}
 	case *ecdsa.PublicKey:
-		privKey, err := util.GetECPrivateKey(keyPEM)
+		privKey, err := util.GetPrivateKey(keyPEM)
 		if err != nil {
 			return err
 		}
 
-		if privKey.PublicKey.X.Cmp(pubKey.(*ecdsa.PublicKey).X) != 0 {
+		if privKey.(*ecdsa.PrivateKey).PublicKey.X.Cmp(pubKey.(*ecdsa.PublicKey).X) != 0 {
+			return errors.New("Public key and private key do not match")
+		}
+	case *sm2.PublicKey:
+		privKey, err := util.GetPrivateKey(keyPEM)
+		if err != nil {
+			return err
+		}
+
+		if privKey.(*sm2.PrivateKey).PublicKey.X.Cmp(pubKey.(*sm2.PublicKey).X) != 0 {
 			return errors.New("Public key and private key do not match")
 		}
 	}

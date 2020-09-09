@@ -66,12 +66,14 @@ func (m *Mysql) Connect() error {
 	connStr := re.ReplaceAllString(datasource, "/")
 
 	if clientTLSConfig.Enabled {
-		tlsConfig, err := tls.GetClientTLSConfig(clientTLSConfig, m.CSP)
+		_, err := tls.GetClientTLSConfig(clientTLSConfig, m.CSP)
 		if err != nil {
 			return errors.WithMessage(err, "Failed to get client TLS for MySQL")
 		}
 
-		mysql.RegisterTLSConfig("custom", tlsConfig)
+		//mysql.RegisterTLSConfig("custom", tlsConfig)
+		//TODO：暂不支持tls
+		mysql.RegisterTLSConfig("custom", nil)
 	}
 
 	log.Debugf("Connecting to MySQL server, using connection string: %s", util.MaskDBCred(connStr))

@@ -8,7 +8,7 @@ package x509_test
 
 import (
 	"bytes"
-	"crypto/x509"
+	//"crypto/x509"
 	"encoding/hex"
 	"fmt"
 	"io/ioutil"
@@ -23,6 +23,8 @@ import (
 	. "github.com/hyperledger/fabric-ca/lib/client/credential/x509"
 	"github.com/hyperledger/fabric-ca/lib/client/credential/x509/mocks"
 	"github.com/hyperledger/fabric-ca/util"
+
+	"github.com/Hyperledger-TWGC/ccs-gm/x509"
 	"github.com/hyperledger/fabric/bccsp/factory"
 	"github.com/stretchr/testify/assert"
 )

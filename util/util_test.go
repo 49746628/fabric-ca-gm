@@ -22,7 +22,7 @@ import (
 	"crypto/elliptic"
 	"crypto/rand"
 	"crypto/rsa"
-	"crypto/x509"
+	//"crypto/x509"
 	"encoding/pem"
 	"fmt"
 	"io"
@@ -35,6 +35,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/Hyperledger-TWGC/ccs-gm/x509"
 	"github.com/hyperledger/fabric/bccsp/factory"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/spf13/viper"
@@ -677,7 +678,7 @@ func TestGetSerialAsHex(t *testing.T) {
 }
 
 func TestECPrivateKey(t *testing.T) {
-	_, err := GetECPrivateKey(getPEM("../testdata/ec-key.pem", t))
+	_, err := GetPrivateKey(getPEM("../testdata/ec-key.pem", t))
 	assert.NoError(t, err)
 
 	rsaKey, err := rsa.GenerateKey(rand.Reader, 256)
@@ -690,18 +691,18 @@ func TestECPrivateKey(t *testing.T) {
 	}
 
 	pemEncodedPK := pem.EncodeToMemory(&pem.Block{Type: "PRIVATE KEY", Bytes: encodedPK})
-	_, err = GetECPrivateKey(pemEncodedPK)
+	_, err = GetPrivateKey(pemEncodedPK)
 	assert.Error(t, err)
 
-	_, err = GetECPrivateKey([]byte("hello"))
+	_, err = GetPrivateKey([]byte("hello"))
 	assert.Error(t, err)
 
-	_, err = GetECPrivateKey(pem.EncodeToMemory(&pem.Block{Type: "PRIVATE KEY", Bytes: []byte("hello")}))
+	_, err = GetPrivateKey(pem.EncodeToMemory(&pem.Block{Type: "PRIVATE KEY", Bytes: []byte("hello")}))
 	assert.Error(t, err)
 }
 
 func TestPKCS8WrappedECPrivateKey(t *testing.T) {
-	_, err := GetECPrivateKey(getPEM("../testdata/pkcs8eckey.pem", t))
+	_, err := GetPrivateKey(getPEM("../testdata/pkcs8eckey.pem", t))
 	assert.NoError(t, err)
 }
 

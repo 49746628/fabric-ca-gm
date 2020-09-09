@@ -8,10 +8,12 @@ package idemix
 
 import (
 	"crypto/ecdsa"
-	"crypto/x509"
+	//"crypto/x509"
 	"encoding/pem"
 	"io/ioutil"
 
+	"github.com/Hyperledger-TWGC/ccs-gm/sm2"
+	"github.com/Hyperledger-TWGC/ccs-gm/x509"
 	"github.com/cloudflare/cfssl/log"
 	"github.com/hyperledger/fabric-ca/util"
 	"github.com/pkg/errors"
@@ -24,9 +26,9 @@ type RevocationKey interface {
 	// Store stores this revocation key to the disk
 	Store() error
 	// GetKey returns *ecdsa.PrivateKey that represents revocation public and private key pair
-	GetKey() *ecdsa.PrivateKey
+	GetKey() interface{}
 	// SetKey sets revocation public and private key
-	SetKey(key *ecdsa.PrivateKey)
+	SetKey(key interface{})
 	// SetNewKey creates new revocation public and private key pair and sets them in this object
 	SetNewKey() error
 }
@@ -35,7 +37,7 @@ type RevocationKey interface {
 type caIdemixRevocationKey struct {
 	pubKeyFile     string
 	privateKeyFile string
-	key            *ecdsa.PrivateKey
+	key            interface{}
 	idemixLib      Lib
 }
 
@@ -69,7 +71,14 @@ func (rk *caIdemixRevocationKey) Load() error {
 	if err != nil {
 		return errors.WithMessage(err, "Failed to decode revocation key")
 	}
-	pk.PublicKey = *pubKey
+	switch pk.(type) {
+	case *ecdsa.PrivateKey:
+		pk.(*ecdsa.PrivateKey).PublicKey = *(pubKey.(*ecdsa.PublicKey))
+	case *sm2.PrivateKey:
+		pk.(*sm2.PrivateKey).PublicKey = *(pubKey.(*sm2.PublicKey))
+	default:
+		return errors.WithMessage(err, " Idemix revocation key type not recognized. Supported keys: [ECDSA, SM2]")
+	}
 	rk.key = pk
 	return nil
 }
@@ -81,7 +90,19 @@ func (rk *caIdemixRevocationKey) Store() error {
 	if pk == nil {
 		return errors.New("Revocation key is not set")
 	}
-	pkBytes, pubKeyBytes, err := EncodeKeys(pk, &pk.PublicKey)
+
+	var pubKey interface{}
+	var err error
+	switch pk.(type) {
+	case *ecdsa.PrivateKey:
+		pubKey = &(pk.(*ecdsa.PrivateKey).PublicKey)
+	case *sm2.PrivateKey:
+		pubKey = &(pk.(*sm2.PrivateKey).PublicKey)
+	default:
+		return errors.WithMessage(err, " Idemix revocation key type not recognized. Supported keys: [ECDSA, SM2]")
+	}
+
+	pkBytes, pubKeyBytes, err := EncodeKeys(pk, pubKey)
 	if err != nil {
 		return errors.WithMessage(err, "Failed to encode revocation public key")
 	}
@@ -103,12 +124,12 @@ func (rk *caIdemixRevocationKey) Store() error {
 }
 
 // GetKey returns revocation key
-func (rk *caIdemixRevocationKey) GetKey() *ecdsa.PrivateKey {
+func (rk *caIdemixRevocationKey) GetKey() interface{} {
 	return rk.key
 }
 
 // SetKey sets revocation key
-func (rk *caIdemixRevocationKey) SetKey(key *ecdsa.PrivateKey) {
+func (rk *caIdemixRevocationKey) SetKey(key interface{}) {
 	rk.key = key
 }
 
@@ -119,7 +140,7 @@ func (rk *caIdemixRevocationKey) SetNewKey() (err error) {
 }
 
 // EncodeKeys encodes ECDSA key pair to PEM encoding
-func EncodeKeys(privateKey *ecdsa.PrivateKey, publicKey *ecdsa.PublicKey) ([]byte, []byte, error) {
+func EncodeKeys(privateKey interface{}, publicKey interface{}) ([]byte, []byte, error) {
 	encodedPK, err := x509.MarshalECPrivateKey(privateKey)
 	if err != nil {
 		return nil, nil, errors.Wrap(err, "Failed to encode ECDSA private key")
@@ -134,25 +155,25 @@ func EncodeKeys(privateKey *ecdsa.PrivateKey, publicKey *ecdsa.PublicKey) ([]byt
 	return pemEncodedPK, pemEncodedPubKey, nil
 }
 
-// DecodeKeys decodes ECDSA key pair that are pem encoded
-func DecodeKeys(pemEncodedPK, pemEncodedPubKey []byte) (*ecdsa.PrivateKey, *ecdsa.PublicKey, error) {
+// DecodeKeys decodes key pair that are pem encoded
+func DecodeKeys(pemEncodedPK, pemEncodedPubKey []byte) (interface{}, interface{}, error) {
 	block, _ := pem.Decode(pemEncodedPK)
 	if block == nil {
-		return nil, nil, errors.New("Failed to decode ECDSA private key")
+		return nil, nil, errors.New("Failed to decode private key")
 	}
 	pk, err := x509.ParseECPrivateKey(block.Bytes)
 	if err != nil {
-		return nil, nil, errors.Wrap(err, "Failed to parse ECDSA private key bytes")
+		return nil, nil, errors.Wrap(err, "Failed to parse private key bytes")
 	}
 	blockPub, _ := pem.Decode(pemEncodedPubKey)
 	if blockPub == nil {
-		return nil, nil, errors.New("Failed to decode ECDSA public key")
+		return nil, nil, errors.New("Failed to decode public key")
 	}
 	key, err := x509.ParsePKIXPublicKey(blockPub.Bytes)
 	if err != nil {
-		return nil, nil, errors.Wrap(err, "Failed to parse ECDSA public key bytes")
+		return nil, nil, errors.Wrap(err, "Failed to parse public key bytes")
 	}
-	publicKey := key.(*ecdsa.PublicKey)
+	//publicKey := key.(*ecdsa.PublicKey)
 
-	return pk, publicKey, nil
+	return pk, key, nil
 }

@@ -341,7 +341,7 @@ signing:
 csr:
    cn: <<<COMMONNAME>>>
    keyrequest:
-     algo: ecdsa
+     algo: <<<CSR_ALGORITHM>>>
      size: 256
    names:
       - C: US
@@ -387,7 +387,7 @@ idemix:
 bccsp:
     default: SW
     sw:
-        hash: SHA2
+        hash: <<<BCCSP_ALGORITHM>>>
         security: 256
         filekeystore:
             # The directory used for the software file-based keystore
@@ -678,6 +678,16 @@ func (s *ServerCmd) createDefaultConfigFile() error {
 		cfg = strings.Replace(cfg, "<<<COMMONNAME>>>", "", 1)
 		cfg = strings.Replace(cfg, "<<<PATHLENGTH>>>", "0", 1)
 	}
+
+	csrAlgo := "ecdsa"
+	bccspAlgo := "SHA2"
+	gmEnabled := s.myViper.GetBool("gm")
+	if gmEnabled {
+		csrAlgo = "sm2"
+		bccspAlgo = "SM3"
+	}
+	cfg = strings.Replace(cfg, "<<<CSR_ALGORITHM>>>", csrAlgo, 1)
+	cfg = strings.Replace(cfg, "<<<BCCSP_ALGORITHM>>>", bccspAlgo, 1)
 
 	// Now write the file
 	cfgDir := filepath.Dir(s.cfgFileName)

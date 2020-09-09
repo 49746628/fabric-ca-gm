@@ -17,8 +17,11 @@ limitations under the License.
 package lib
 
 import (
+	"crypto/ecdsa"
 	"crypto/rand"
-	"crypto/x509"
+	"github.com/Hyperledger-TWGC/ccs-gm/sm2"
+
+	//"crypto/x509"
 	"crypto/x509/pkix"
 	"encoding/pem"
 	"errors"
@@ -32,6 +35,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/Hyperledger-TWGC/ccs-gm/x509"
 	"github.com/cloudflare/cfssl/config"
 )
 
@@ -196,7 +200,13 @@ func GenerateECDSATestCert() error {
 		return err
 	}
 
-	publicKey := &privateKey.PublicKey
+	var publicKey interface{}
+	switch privateKey.(type) {
+	case *ecdsa.PrivateKey:
+		publicKey = &privateKey.(*ecdsa.PrivateKey).PublicKey
+	case *sm2.PrivateKey:
+		publicKey = &privateKey.(*sm2.PrivateKey).PublicKey
+	}
 
 	var parent = template
 	cert, err := x509.CreateCertificate(rand.Reader, template, parent, publicKey, privateKey)

@@ -52,6 +52,7 @@ Fabric-CA Client's CLI
           --tls.client.certfile string     PEM-encoded certificate file when mutual authenticate is enabled
           --tls.client.keyfile string      PEM-encoded key file when mutual authentication is enabled
       -u, --url string                     URL of fabric-ca-server (default "http://localhost:7054")
+          --gm.enable                      enable gm algo
     
     Use "fabric-ca-client [command] --help" for more information about a command.
 

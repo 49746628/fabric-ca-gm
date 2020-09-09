@@ -8,8 +8,8 @@ package lib_test
 
 import (
 	"bytes"
-	"crypto/tls"
-	"crypto/x509"
+	//"crypto/tls"
+	//"crypto/x509"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -25,6 +25,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/Hyperledger-TWGC/ccs-gm/tls"
+	"github.com/Hyperledger-TWGC/ccs-gm/x509"
 	"github.com/cloudflare/cfssl/certdb"
 	"github.com/cloudflare/cfssl/csr"
 	"github.com/hyperledger/fabric-ca/api"

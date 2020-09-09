@@ -19,7 +19,7 @@ package tls
 import (
 	"crypto/rand"
 	"crypto/rsa"
-	"crypto/x509"
+	//"crypto/x509"
 	"encoding/pem"
 	"errors"
 	"fmt"
@@ -28,6 +28,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/Hyperledger-TWGC/ccs-gm/x509"
 	"github.com/stretchr/testify/assert"
 )
 

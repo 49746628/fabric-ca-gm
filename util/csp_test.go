@@ -17,13 +17,14 @@ limitations under the License.
 package util_test
 
 import (
-	"crypto/x509"
+	//"crypto/x509"
 	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"testing"
 
+	"github.com/Hyperledger-TWGC/ccs-gm/x509"
 	"github.com/cloudflare/cfssl/csr"
 	. "github.com/hyperledger/fabric-ca/util"
 	"github.com/hyperledger/fabric-ca/util/mocks"

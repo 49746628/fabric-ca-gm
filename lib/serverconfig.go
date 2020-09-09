@@ -49,7 +49,7 @@ type ServerConfig struct {
 	CAfiles []string `help:"A list of comma-separated CA configuration files"`
 	// The number of non-default CAs, which is useful for a dev environment to
 	// quickly start any number of CAs in a single server
-	CAcount int `def:"0" help:"Number of non-default CA instances"`
+	CAcount int	`def:"0" help:"Number of non-default CA instances"`
 	// Size limit of an acceptable CRL in bytes
 	CRLSizeLimit int `def:"512000" help:"Size limit of an acceptable CRL in bytes"`
 	// CompMode1_3 determines if to run in comptability for version 1.3
@@ -58,6 +58,7 @@ type ServerConfig struct {
 	Metrics operations.MetricsOptions `hide:"true"`
 	// Operations contains the configuration for the operations servers
 	Operations operations.Options `hide:"true"`
+	GM	bool	`help:"Enable gm cryptographic"`
 }
 
 // CORS defines the Cross-Origin Resource Sharing settings for the server.

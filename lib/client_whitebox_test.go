@@ -7,7 +7,7 @@ package lib
 
 import (
 	"crypto/rand"
-	"crypto/x509"
+	//"crypto/x509"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -15,6 +15,7 @@ import (
 	"path"
 	"testing"
 
+	"github.com/Hyperledger-TWGC/ccs-gm/x509"
 	"github.com/cloudflare/cfssl/csr"
 	"github.com/cloudflare/cfssl/log"
 	"github.com/cloudflare/cfssl/signer"

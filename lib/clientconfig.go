@@ -43,6 +43,7 @@ type ClientConfig struct {
 	CSP        *factory.FactoryOpts `mapstructure:"bccsp" hide:"true"`
 	Debug      bool                 `opt:"d" help:"Enable debug level logging" hide:"true"`
 	LogLevel   string               `help:"Set logging level (info, warning, debug, error, fatal, critical)"`
+	GM    	   bool   				`help:"Enable gm cryptographic"`
 }
 
 // Enroll a client given the server's URL and the client's home directory.

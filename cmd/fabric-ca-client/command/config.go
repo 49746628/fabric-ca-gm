@@ -137,7 +137,7 @@ tls:
 csr:
   cn: <<<ENROLLMENT_ID>>>
   keyrequest:
-    algo: ecdsa
+    algo: <<<CSR_ALGORITHM>>>
     size: 256
   serialnumber:
   names:
@@ -191,7 +191,7 @@ caname:
 bccsp:
     default: SW
     sw:
-        hash: SHA2
+        hash: <<<BCCSP_ALGORITHM>>>
         security: 256
         filekeystore:
             # The directory used for the software file-based keystore
@@ -329,6 +329,16 @@ func (c *ClientCmd) createDefaultConfigFile() error {
 		}
 	}
 	cfg = strings.Replace(cfg, "<<<ENROLLMENT_ID>>>", user, 1)
+
+	csrAlgo := "ecdsa"
+	bccspAlgo := "SHA2"
+	gmEnabled := c.myViper.GetBool("gm")
+	if gmEnabled {
+		csrAlgo = "sm2"
+		bccspAlgo = "SM3"
+	}
+	cfg = strings.Replace(cfg, "<<<CSR_ALGORITHM>>>", csrAlgo, 1)
+	cfg = strings.Replace(cfg, "<<<BCCSP_ALGORITHM>>>", bccspAlgo, 1)
 
 	// Create the directory if necessary
 	err = os.MkdirAll(c.homeDirectory, 0755)

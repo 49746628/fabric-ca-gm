@@ -21,7 +21,7 @@ import (
 	"crypto/hmac"
 	"crypto/rand"
 	"crypto/sha512"
-	"crypto/x509"
+	//"crypto/x509"
 	"crypto/x509/pkix"
 	"encoding/asn1"
 	"encoding/base64"
@@ -30,11 +30,14 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/Hyperledger-TWGC/ccs-gm/sm2"
+	"github.com/Hyperledger-TWGC/ccs-gm/x509"
 	"github.com/cloudflare/cfssl/log"
 	"github.com/hyperledger/fabric-ca/api"
 	"github.com/hyperledger/fabric-ca/util"
 	"github.com/hyperledger/fabric/bccsp"
 	cspsigner "github.com/hyperledger/fabric/bccsp/signer"
+	"github.com/pkg/errors"
 )
 
 var (
@@ -147,7 +150,7 @@ func (tm *Mgr) GetBatch(req *GetTCertBatchRequest, ecert *x509.Certificate) (*ap
 	nonce := make([]byte, 16) // 8 bytes rand, 8 bytes timestamp
 	rand.Reader.Read(nonce[:8])
 
-	pub := ecert.PublicKey.(*ecdsa.PublicKey)
+	pub := ecert.PublicKey
 
 	mac := hmac.New(sha512.New384, []byte(createHMACKey()))
 	raw, _ := x509.MarshalPKIXPublicKey(pub)
@@ -175,14 +178,33 @@ func (tm *Mgr) GetBatch(req *GetTCertBatchRequest, ecert *x509.Certificate) (*ap
 		mac = hmac.New(sha512.New384, mac.Sum(nil))
 		mac.Write(tidx)
 
+
+
 		one := new(big.Int).SetInt64(1)
 		k := new(big.Int).SetBytes(mac.Sum(nil))
-		k.Mod(k, new(big.Int).Sub(pub.Curve.Params().N, one))
-		k.Add(k, one)
 
-		tmpX, tmpY := pub.ScalarBaseMult(k.Bytes())
-		txX, txY := pub.Curve.Add(pub.X, pub.Y, tmpX, tmpY)
-		txPub := ecdsa.PublicKey{Curve: pub.Curve, X: txX, Y: txY}
+		var txPub interface{}
+		switch pub.(type){
+		case *ecdsa.PublicKey:
+			tmpPub := pub.(*ecdsa.PublicKey)
+			k.Mod(k, new(big.Int).Sub(tmpPub.Curve.Params().N, one))
+			k.Add(k, one)
+
+			tmpX, tmpY := tmpPub.ScalarBaseMult(k.Bytes())
+			txX, txY := tmpPub.Curve.Add(tmpPub.X, tmpPub.Y, tmpX, tmpY)
+			txPub = ecdsa.PublicKey{Curve: tmpPub.Curve, X: txX, Y: txY}
+
+		case *sm2.PublicKey:
+			tmpPub := pub.(*sm2.PublicKey)
+			k.Mod(k, new(big.Int).Sub(tmpPub.Curve.Params().N, one))
+			k.Add(k, one)
+
+			tmpX, tmpY := tmpPub.ScalarBaseMult(k.Bytes())
+			txX, txY := tmpPub.Curve.Add(tmpPub.X, tmpPub.Y, tmpX, tmpY)
+			txPub = sm2.PublicKey{Curve: tmpPub.Curve, X: txX, Y: txY}
+		default:
+			return nil, errors.New("Certificate's public key type not recognized. Supported keys: [ECDSA, SM2]")
+		}
 
 		// Compute encrypted TCertIndex
 		encryptedTidx, encryptErr := CBCPKCS7Encrypt(extKey, tidx)

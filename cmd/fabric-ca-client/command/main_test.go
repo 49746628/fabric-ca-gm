@@ -9,7 +9,7 @@ package command
 import (
 	"bufio"
 	"bytes"
-	"crypto/x509"
+	//"crypto/x509"
 	"encoding/hex"
 	"encoding/pem"
 	"errors"
@@ -26,6 +26,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/Hyperledger-TWGC/ccs-gm/x509"
 	"github.com/cloudflare/cfssl/csr"
 	"github.com/cloudflare/cfssl/log"
 	"github.com/hyperledger/fabric-ca/api"

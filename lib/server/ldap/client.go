@@ -312,7 +312,8 @@ func (lc *Client) newConnection() (conn *ldap.Conn, err error) {
 
 		tlsConfig.ServerName = lc.Host
 
-		conn, err = ldap.DialTLS("tcp", address, tlsConfig)
+		//TODO：暂不支持tls
+		conn, err = ldap.DialTLS("tcp", address, nil)
 		if err != nil {
 			return conn, errors.Wrapf(err, "Failed to connect to LDAP server over TLS at %s", address)
 		}
